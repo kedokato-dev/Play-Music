@@ -2,9 +2,18 @@ package com.example.myapplication.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.SearchManager;
+import android.content.Context;
+import android.database.MatrixCursor;
 import android.os.Bundle;
+import android.provider.BaseColumns;
+import android.view.ContextMenu;
+import android.view.Menu;
 import android.view.View;
+import android.widget.CursorAdapter;
 import android.widget.ListView;
+import android.widget.SearchView;
+import android.widget.SimpleCursorAdapter;
 
 import com.example.myapplication.R;
 import com.example.myapplication.adapter.ElementListAdapter;
@@ -26,11 +35,21 @@ public class MainActivity extends AppCompatActivity {
     View listHeader;
     View listFooter;
 
+    SimpleCursorAdapter cursorAdapter;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(getSupportActionBar() != null){
+            getSupportActionBar().setTitle("Music App");
+        }
+
+        final String[] from = new String[]{"songName"};
+        final int[] to = new int[]{android.R.id.text1};
+
+        cursorAdapter = new SimpleCursorAdapter(MainActivity.this, android.R.layout.simple_list_item_1, null, from, to, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER );
         setContentView(R.layout.activity_main);
         listView = findViewById(R.id.listView);
         listOfflineElement = new ArrayList<>();
@@ -65,4 +84,37 @@ public class MainActivity extends AppCompatActivity {
         listView.addFooterView(listFooter);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu,menu);
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.tim_kiem).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setSuggestionsAdapter(cursorAdapter);
+        getSuggestion("test");
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                getSuggestion(s);
+                return true;
+            }
+        });
+        return true;
+    }
+
+    private void getSuggestion(String text){
+        MatrixCursor c = new MatrixCursor(new String[]{BaseColumns._ID, "songName"});
+        for (int i = 0; i < ListSong.getListSong().size(); i++){
+            if(ListSong.getListSong().get(i).getSongName().toLowerCase().contains(text.toLowerCase())){
+                c.addRow(new Object[]{1, ListSong.getListSong().get(i).getSongName()});
+            }
+        }
+
+        cursorAdapter.changeCursor(c);
+    }
 }

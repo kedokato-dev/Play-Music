@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:appcompat="http://schemas.android.com/apk/res-auto">
+<!--    <item-->
+<!--        android:id="@+id/tim_kiem"-->
+<!--        android:title="Tìm kiếm"-->
+<!--        android:icon="@drawable/tim_kiem"-->
+<!--        appcompat:showAsAction="always"-->
+<!--        >-->
+
+<!--    </item>-->
+
+    <item
+        android:id="@+id/tim_kiem"
+        android:title="Tìm kiếm"
+        appcompat:showAsAction="always"
+        appcompat:actionViewClass="android.widget.SearchView"
+
+        >
+
+    </item>
+</menu>
