@@ -10,12 +10,12 @@
         android:orientation="horizontal"
         android:background="#dcdcdc">
 
-        <ImageView
+        <com.example.myapplication.customview.RoundedImageView
             android:id="@+id/imgView_anh"
             android:layout_width="128dp"
             android:layout_height="128dp"
             android:layout_marginStart="21dp"
-            android:background="@drawable/img"
+            android:src="@drawable/img"
             android:layout_gravity="center_vertical"/>
 
         <LinearLayout
