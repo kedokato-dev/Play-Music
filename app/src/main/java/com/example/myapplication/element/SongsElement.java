@@ -6,12 +6,15 @@ import android.view.View;
 
 import com.example.myapplication.R;
 import com.example.myapplication.activity.ListSongActivity;
+import com.example.myapplication.util.StorageUtil;
 
 public class SongsElement extends BaseListElement {
 
+    public static String OFF_SONG = "off_song";
+
     public SongsElement(Context context){
-        updateData();
         this.context = context;
+        updateData();
     }
 
 //    public SongsElement(int iconResource, String elementName, int number) {
@@ -22,7 +25,7 @@ public class SongsElement extends BaseListElement {
     public void updateData() {
         this.setElementName("Song");
         this.setIconResource(R.drawable.icons8_music_note_48);
-        this.setNumber(0);
+        this.setNumber(StorageUtil.getMp3FileCursor(this.context).getCount());
     }
 
     @Override
@@ -32,6 +35,7 @@ public class SongsElement extends BaseListElement {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(SongsElement.this.context, ListSongActivity.class);
+                intent.setAction(OFF_SONG);
                 SongsElement.this.context.startActivity(intent);
             }
         };

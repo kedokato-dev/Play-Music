@@ -61,20 +61,7 @@ public class MainActivity extends AppCompatActivity {
     private void addElement(){
         listOfflineElement.add(new SongsElement(this));
         listOfflineElement.add(new AlbumElemnet(this));
-        listOfflineElement.add(new SongsElement(this));
-        listOfflineElement.add(new AlbumElemnet(this));
-        listOfflineElement.add(new SongsElement(this));
-        listOfflineElement.add(new AlbumElemnet(this));
-        listOfflineElement.add(new SongsElement(this));
-        listOfflineElement.add(new AlbumElemnet(this));
-        listOfflineElement.add(new SongsElement(this));
-        listOfflineElement.add(new AlbumElemnet(this));
-        listOfflineElement.add(new SongsElement(this));
-        listOfflineElement.add(new AlbumElemnet(this));
-        listOfflineElement.add(new SongsElement(this));
-        listOfflineElement.add(new AlbumElemnet(this));
-        listOfflineElement.add(new SongsElement(this));
-        listOfflineElement.add(new AlbumElemnet(this));
+
         adapter = new ElementListAdapter(this, listOfflineElement);
     }
 
@@ -117,7 +104,8 @@ public class MainActivity extends AppCompatActivity {
                cursorAdapter.getCursor().moveToPosition(i);
                String query = cursorAdapter.getCursor().getString(1);
                Intent intent = new Intent(MainActivity.this, ListSongActivity.class);
-               intent.putExtra("songName", query);
+               intent.setAction(intent.ACTION_SEARCH);
+               intent.putExtra(ListSongActivity.SONG_NAME, query);
                startActivity(intent);
                return true;
            }
