@@ -1,13 +1,16 @@
 package com.example.myapplication.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.myapplication.R;
+import com.example.myapplication.activity.PlayerActivity;
 import com.example.myapplication.data.ListSong;
 import com.example.myapplication.element.Song;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -15,16 +18,17 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.util.ArrayList;
 
-public class SongListAdapter extends BaseAdapter {
+public class SongListAdapter extends BaseAdapter implements AdapterView.OnItemClickListener {
 
     ArrayList<Song> listSong;
     Context context;
 
-    public SongListAdapter(Context context){
+    public SongListAdapter(Context context) {
         listSong = new ArrayList<>();
         this.context = context;
         ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(context));
     }
+
     @Override
     public int getCount() {
         return listSong.size();
@@ -54,9 +58,19 @@ public class SongListAdapter extends BaseAdapter {
 
         return view;
     }
-    public   void addItem(Song song){
-        if(listSong != null && song!=null){
+
+    public void addItem(Song song) {
+        if (listSong != null && song != null) {
             listSong.add(song);
         }
+    }
+
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        Intent intent = new Intent(context, PlayerActivity.class);
+        intent.putExtra("songName", listSong.get(i).getSongName());
+        intent.putExtra("songUrl", listSong.get(i).getSongUrl());
+        context.startActivity(intent);
     }
 }

@@ -33,7 +33,7 @@ public class ListSongActivity extends AppCompatActivity {
 
         songListAdapter = new SongListAdapter(this);
         listSong.setAdapter(songListAdapter);
-
+        listSong.setOnItemClickListener(songListAdapter);
         handleIntent(getIntent());
 
     }
@@ -58,12 +58,12 @@ public class ListSongActivity extends AppCompatActivity {
                     int data = c.getColumnIndex(MediaStore.Images.Media.DATA);
                     do{
 //                        songListAdapter.addItem(new Song(
-////                                c.getString(c.getColumnIndex(MediaStore.Audio.Media.TITLE)),
-////                                c.getString(c.getColumnIndex(MediaStore.Audio.Media.ARTIST)),
-////                                "",
-////                                c.getString(c.getColumnIndex(MediaStore.Images.Media.DATA)),
-////                                ""
-//
+//                                c.getString(c.getColumnIndex(MediaStore.Audio.Media.TITLE)),
+//                                c.getString(c.getColumnIndex(MediaStore.Audio.Media.ARTIST)),
+//                                "",
+//                                c.getString(c.getColumnIndex(MediaStore.Images.Media.DATA)),
+//                                ""
+
 //                        ));
                         String tt = c.getString(title);
                         String ar = c.getString(artist);
