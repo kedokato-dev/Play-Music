@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.database.MatrixCursor;
 import android.os.Bundle;
 import android.provider.BaseColumns;
@@ -104,6 +105,23 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+       searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
+           @Override
+           public boolean onSuggestionSelect(int i) {
+               return true;
+           }
+
+           @Override
+           public boolean onSuggestionClick(int i) {
+               cursorAdapter.getCursor().moveToPosition(i);
+               String query = cursorAdapter.getCursor().getString(1);
+               Intent intent = new Intent(MainActivity.this, ListSongActivity.class);
+               intent.putExtra("songName", query);
+               startActivity(intent);
+               return true;
+           }
+       });
         return true;
     }
 
@@ -114,7 +132,6 @@ public class MainActivity extends AppCompatActivity {
                 c.addRow(new Object[]{1, ListSong.getListSong().get(i).getSongName()});
             }
         }
-
         cursorAdapter.changeCursor(c);
     }
 }

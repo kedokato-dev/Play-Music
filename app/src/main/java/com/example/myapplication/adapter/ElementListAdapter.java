@@ -52,7 +52,7 @@ public class ElementListAdapter extends BaseAdapter {
         name.setText(listElements.get(i).getElementName());
         number.setText(""+listElements.get(i).getNumber());
 
-
+        view.setOnClickListener(listElements.get(i).getOnclickListener());
         return view;
     }
 }

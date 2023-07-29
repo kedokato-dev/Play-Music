@@ -1,9 +1,11 @@
 package com.example.myapplication.element;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 
 import com.example.myapplication.R;
+import com.example.myapplication.activity.ListSongActivity;
 
 public class SongsElement extends BaseListElement {
 
@@ -25,6 +27,13 @@ public class SongsElement extends BaseListElement {
 
     @Override
     public View.OnClickListener getOnclickListener() {
-        return null;
+
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SongsElement.this.context, ListSongActivity.class);
+                SongsElement.this.context.startActivity(intent);
+            }
+        };
     }
 }
