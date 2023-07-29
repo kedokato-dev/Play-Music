@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="100dp">
 
     <ImageView
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="10dp"
+        android:layout_margin="15dp"
         android:id="@+id/song_image"
         android:layout_width="70dp"
         android:layout_height="70dp"/>
 
     <LinearLayout
+        android:layout_centerVertical="true"
+        android:id="@+id/linear"
         android:orientation="vertical"
         android:layout_width="wrap_content"
+        android:layout_toRightOf="@+id/song_image"
         android:layout_height="wrap_content">
 
         <TextView
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="10dp"
+            android:layout_margin="15dp"
             android:text="Ten bai hat"
             android:id="@+id/song_name"
             android:textSize="18sp"
@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"/>
 
         <TextView
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="15dp"
             android:text="ten ca si"
             android:textColor="@color/black"
             android:id="@+id/song_singer"
@@ -37,4 +37,18 @@
             android:layout_height="wrap_content"/>
     </LinearLayout>
 
-</LinearLayout>
+    <Button
+        android:id="@+id/btn_download"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="10dp"
+        android:layout_toRightOf="@+id/linear"
+        android:text="Tải về"
+        android:textSize="12dp"
+        app:iconTint="#03A9F4"
+        app:rippleColor="#2196F3" />
+
+</RelativeLayout>
