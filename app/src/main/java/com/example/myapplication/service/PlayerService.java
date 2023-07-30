@@ -1,13 +1,18 @@
 package com.example.myapplication.service;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
+
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,6 +24,8 @@ public class PlayerService extends Service {
     MediaPlayer mediaPlayer;
     String url;
     String name;
+
+    updateTimerRunable updateTimer;
     public PlayerService() {
     }
 
@@ -28,8 +35,103 @@ public class PlayerService extends Service {
         name = intent.getStringExtra("songName");
         playAdudio();
 
+        IntentFilter filter = new IntentFilter("ChangeStatusMedia");
+
+        filter.addAction("SeekChange");
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver(), filter);
         return super.onStartCommand(intent, flags, startId);
     }
+
+    private BroadcastReceiver receiver(){
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                switch (intent.getAction()){
+                    case "ChangeStatusMedia" :
+                        if(mediaPlayer.isPlaying()){
+                            mediaPlayer.pause();
+                            updateTimer.onPause();
+
+                        }else {
+                            mediaPlayer.start();
+                            updateTimer.onResum();
+                        }
+                        break;
+
+                    case "SeekChange":
+                        int currentPosition = intent.getIntExtra("currentPosition", 0);
+                        mediaPlayer.seekTo(currentPosition *mediaPlayer.getDuration() / 100);
+                        break;
+                }
+            }
+        };
+    }
+
+
+
+    private void sendDurationToActivity(int dur){
+        Intent intent = new Intent("SendDuration");
+        intent.putExtra("duration", dur);
+
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+
+    }
+
+    private void sendProgressToActivity(int progress, int currentPosition){
+        Intent intent = new Intent("SendProgress");
+        intent.putExtra("progress", progress);
+        intent.putExtra("currentPosition", currentPosition);
+
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+    }
+
+    class updateTimerRunable implements Runnable{
+
+        private boolean isPause;
+        private Object pauseLock;
+        public updateTimerRunable(){
+            isPause = false;
+            pauseLock = new Object();
+        }
+
+        @Override
+        public void run() {
+            while(mediaPlayer.isPlaying()){
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                sendProgressToActivity(mediaPlayer.getCurrentPosition() * 100/mediaPlayer.getDuration(), mediaPlayer.getCurrentPosition());
+                synchronized (pauseLock){
+                    while (isPause){
+                        try {
+                            pauseLock.wait();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+            }
+        }
+        public void onPause(){
+            synchronized (pauseLock){
+                isPause = true;
+            }
+        }
+        public void onResum(){
+            synchronized (pauseLock){
+                isPause = false;
+                pauseLock.notifyAll();
+            }
+        }
+    }
+
+    private void createUpdateTimer(){
+         updateTimer = new updateTimerRunable();
+        new Thread(updateTimer).start();
+    }
+
 
     private void playAdudio() {
         if(h==null) {
@@ -73,6 +175,13 @@ public class PlayerService extends Service {
                 }
                 try {
                     mediaPlayer.setDataSource(f.getPath());
+                    mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                        @Override
+                        public void onPrepared(MediaPlayer mediaPlayer) {
+                            sendDurationToActivity(mediaPlayer.getDuration());
+                            createUpdateTimer();
+                        }
+                    });
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -105,6 +214,13 @@ public class PlayerService extends Service {
                 }
 
                 try {
+                    mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                        @Override
+                        public void onPrepared(MediaPlayer mediaPlayer) {
+                            sendDurationToActivity(mediaPlayer.getDuration());
+                            createUpdateTimer();
+                        }
+                    });
                     mediaPlayer.prepare();
                 } catch (IOException e) {
                     e.printStackTrace();

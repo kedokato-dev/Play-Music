@@ -60,7 +60,7 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/time_finish"
+                    android:id="@+id/time_end"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
@@ -68,21 +68,21 @@
                     android:textColor="@color/white"
                     android:textStyle="bold" />
 
-                <ProgressBar
+                <SeekBar
                     android:id="@+id/progress_player"
-                    style="@android:style/Widget.ProgressBar.Horizontal"
                     android:layout_width="fill_parent"
-                    android:layout_height="5dp"
+                    android:layout_height="18dp"
                     android:layout_centerVertical="true"
-                    android:layout_toLeftOf="@+id/time_finish"
+                    android:layout_toLeftOf="@+id/time_end"
                     android:layout_toRightOf="@+id/time_start" />
             </RelativeLayout>
 
             <ImageButton
+                android:id="@+id/btn_pause"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_gravity="center_horizontal"
-                android:background="@drawable/play" />
+                android:background="@drawable/pause" />
 
         </LinearLayout>
 
