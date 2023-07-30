@@ -69,7 +69,7 @@ public class ListSongActivity extends AppCompatActivity {
                         String ar = c.getString(artist);
                         String dt = c.getString(data);
 
-                        songListAdapter.addItem(new Song(tt, ar, "", dt,""));
+                        songListAdapter.addItem(new Song(tt, ar, dt, "",""));
                     }while (c.moveToNext());
                 }
             }

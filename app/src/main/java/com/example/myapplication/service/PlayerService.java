@@ -9,6 +9,7 @@ import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
 
+import java.io.File;
 import java.io.IOException;
 
 public class PlayerService extends Service {
@@ -37,20 +38,63 @@ public class PlayerService extends Service {
                 public void run() {
                     Looper.prepare();
                     h = new Handler();
-                    h.post(playAudioFromUrl());
+                    File f = new File(url);
+                    if(f.exists() && f.isFile()){
+                        h.post(playAudioFromFile());
+                    }else {
+                        h.post(playAudioFromUrl());
+                    }
                     Looper.loop();
                 }
             });
             t.start();
         }else {
-            h.post(playAudioFromUrl());
+            File f = new File(url);
+            if(f.exists() && f.isFile()){
+                h.post(playAudioFromFile());
+            }else {
+                h.post(playAudioFromUrl());
+            }
         }
+    }
+
+    private Runnable playAudioFromFile(){
+        return new Runnable() {
+            @Override
+            public void run() {
+                if(mediaPlayer!=null){
+                    mediaPlayer.release();
+                }
+                mediaPlayer = new MediaPlayer();
+                File f = new File(url);
+                if(!f.exists()){
+                    stopSelf();
+                    return;
+                }
+                try {
+                    mediaPlayer.setDataSource(f.getPath());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                try {
+                    mediaPlayer.prepare();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                mediaPlayer.start();
+                mediaPlayer.setLooping(true);
+            }
+        };
+
     }
 
     private Runnable playAudioFromUrl(){
         return  new Runnable() {
             @Override
             public void run() {
+                if(mediaPlayer!=null){
+                    mediaPlayer.release();
+                }
                 mediaPlayer = new MediaPlayer();
                 mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 

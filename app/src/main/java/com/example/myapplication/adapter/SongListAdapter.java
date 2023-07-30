@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -60,7 +61,7 @@ public class SongListAdapter extends BaseAdapter implements AdapterView.OnItemCl
         TextView songName = view.findViewById(R.id.song_name);
         TextView songSinger = view.findViewById(R.id.song_singer);
         ImageView songImage = view.findViewById(R.id.song_image);
-        Button btn_download = view.findViewById(R.id.btn_download);
+        ImageButton btn_download = view.findViewById(R.id.btn_download);
 
         BroadcastReceiver receiver = new BroadcastReceiver() {
             @Override

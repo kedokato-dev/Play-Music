@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:descendantFocusability="blocksDescendants"
     android:layout_width="match_parent"
     android:layout_height="100dp">
 
@@ -37,18 +37,27 @@
             android:layout_height="wrap_content"/>
     </LinearLayout>
 
-    <Button
-        android:id="@+id/btn_download"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginTop="15dp"
+<!--    <Button-->
+<!--        android:id="@+id/btn_download"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_alignParentRight="true"-->
+<!--        android:layout_centerVertical="true"-->
+<!--        android:layout_marginTop="15dp"-->
+<!--        android:layout_marginEnd="10dp"-->
+<!--        android:layout_toRightOf="@+id/linear"-->
+<!--        android:text="Tải về"-->
+<!--        android:textSize="12dp"-->
+<!--        app:iconTint="#03A9F4"-->
+<!--        app:rippleColor="#2196F3" />-->
+
+    <ImageButton
         android:layout_marginEnd="10dp"
-        android:layout_toRightOf="@+id/linear"
-        android:text="Tải về"
-        android:textSize="12dp"
-        app:iconTint="#03A9F4"
-        app:rippleColor="#2196F3" />
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/download"
+        android:id="@+id/btn_download"
+        android:layout_width="30dp"
+        android:layout_height="30dp" />
 
 </RelativeLayout>

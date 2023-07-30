@@ -17,9 +17,6 @@ public class SongsElement extends BaseListElement {
         updateData();
     }
 
-//    public SongsElement(int iconResource, String elementName, int number) {
-//        super(iconResource, elementName, number);
-//    }
 
     @Override
     public void updateData() {
