@@ -1,7 +1,9 @@
 package com.example.myapplication.service;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -9,8 +11,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
+import androidx.core.app.NotificationCompat;
 import android.os.IBinder;
 import android.os.Looper;
 
@@ -18,6 +22,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.myapplication.R;
+import com.example.myapplication.notification.MyAplication;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,6 +38,8 @@ public class PlayerService extends Service {
     updateTimerRunable updateTimer;
 
     NotificationManager notificationManager;
+
+    BroadcastReceiver notificationRecever;
     public PlayerService() {
     }
 
@@ -52,10 +59,46 @@ public class PlayerService extends Service {
     private void showNotification(){
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
-        Notification notification = new NotificationCompat.Builder(this)
+        notificationRecever = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                switch (intent.getAction()){
+                    case "changeStatus":
+                        if(mediaPlayer.isPlaying()){
+                            mediaPlayer.pause();
+                            updateTimer.onPause();
+
+                        }else {
+                            mediaPlayer.start();
+                            updateTimer.onResum();
+                        }
+                        break;
+                    case "stopAudio":
+                        mediaPlayer.pause();
+                        updateTimer.onPause();
+                        notificationManager.cancelAll();
+                        stopSelf();
+                        break;
+                }
+            }
+        };
+        IntentFilter intentFilter = new IntentFilter("changeStatus");
+        intentFilter.addAction("stopAudio");
+
+        registerReceiver(notificationRecever, intentFilter);
+
+        PendingIntent changeStatusIntent = PendingIntent.getBroadcast(this, 0, new Intent("changeStatus"), PendingIntent.FLAG_IMMUTABLE |PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent stopAudioIntent = PendingIntent.getBroadcast(this, 0, new Intent("stopAudio"), PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+        Notification notification = new NotificationCompat.Builder(this, MyAplication.CHANNEL_ID)
+//        Notification notification = new Notification.Builder(this)
                 .setContentTitle("Audio Player")
                 .setContentText(name)
-                .setSmallIcon(R.drawable.img).build();
+                .addAction(R.drawable.play, "pause/resum", changeStatusIntent)
+                .addAction(R.drawable.pause, "stop", stopAudioIntent)
+                .setPriority(NotificationManager.IMPORTANCE_HIGH)
+                .setSmallIcon(R.drawable.icon200).build();
 
         notification.flags |= Notification.FLAG_ONGOING_EVENT;
 //        notificationManager.notify(1, notification);
