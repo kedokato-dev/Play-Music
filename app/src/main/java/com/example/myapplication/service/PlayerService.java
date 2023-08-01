@@ -5,10 +5,13 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.app.TaskStackBuilder;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Build;
@@ -17,11 +20,15 @@ import android.os.HandlerThread;
 import androidx.core.app.NotificationCompat;
 import android.os.IBinder;
 import android.os.Looper;
+import android.support.v4.media.session.MediaSessionCompat;
 
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.myapplication.R;
+import com.example.myapplication.activity.ListSongActivity;
+import com.example.myapplication.activity.MainActivity;
+import com.example.myapplication.activity.PlayerActivity;
 import com.example.myapplication.notification.MyAplication;
 
 import java.io.BufferedInputStream;
@@ -97,13 +104,34 @@ public class PlayerService extends Service {
         PendingIntent changeStatusIntent = PendingIntent.getBroadcast(this, 0, new Intent("changeStatus"), PendingIntent.FLAG_IMMUTABLE |PendingIntent.FLAG_UPDATE_CURRENT);
         PendingIntent stopAudioIntent = PendingIntent.getBroadcast(this, 0, new Intent("stopAudio"), PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
 
+
+
+        // Create an Intent for the activity you want to start
+        Intent resultIntent = new Intent(this, MainActivity.class);
+        // Create the TaskStackBuilder and add the intent, which inflates the back stack
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addNextIntentWithParentStack(resultIntent);
+        // Get the PendingIntent containing the entire back stack
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(0,
+                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+        MediaSessionCompat mediaSession = new MediaSessionCompat(this, "tag");
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.image_large);
+
         Notification notification = new NotificationCompat.Builder(this, MyAplication.CHANNEL_ID)
 //        Notification notification = new Notification.Builder(this)
                 .setContentTitle(name)
                 .setContentText(singer)
-                .addAction(R.drawable.play, "pause/resum", changeStatusIntent)
-                .addAction(R.drawable.pause, "stop", stopAudioIntent)
-                .setPriority(NotificationManager.IMPORTANCE_HIGH)
+                .setSubText("AnhQuanDepTrai")
+                .addAction(R.drawable.ic_play, "pause/resum", changeStatusIntent)
+                .addAction(R.drawable.ic_close, "stop", stopAudioIntent)
+                .setPriority(NotificationManager.IMPORTANCE_DEFAULT)
+                .setContentIntent(resultPendingIntent)
+                .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
+                        .setShowActionsInCompactView(1 /* #1: pause button */)
+                        .setMediaSession(mediaSession.getSessionToken()))
+                .setLargeIcon(bitmap)
                 .setSmallIcon(R.drawable.icon200).build();
 
         notification.flags |= Notification.FLAG_ONGOING_EVENT;

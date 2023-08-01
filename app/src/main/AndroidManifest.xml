@@ -29,10 +29,12 @@
         <activity
             android:name=".activity.PlayerActivity"
             android:exported="false"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:parentActivityName=".activity.ListSongActivity"/>
         <activity
             android:name=".activity.ListSongActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".activity.MainActivity"/>
         <activity
             android:name=".activity.MainActivity"
             android:exported="true">
@@ -42,6 +44,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>
