@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 
 public class PlayerActivity extends AppCompatActivity {
 
-    TextView time_start, time_end;
+    TextView time_start, time_end, song_name, song_singer;
     SeekBar seekBar;
     boolean isPlay = true;
     ImageButton statusButton;
@@ -38,6 +38,10 @@ public class PlayerActivity extends AppCompatActivity {
         time_end  = findViewById(R.id.time_end);
         seekBar = findViewById(R.id.progress_player);
         statusButton = findViewById(R.id.btn_pause);
+        song_name = findViewById(R.id.song_name);
+        song_singer = findViewById(R.id.song_singer);
+
+
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -70,6 +74,11 @@ public class PlayerActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         startService(createIntentService(intent.getStringExtra("songName"), intent.getStringExtra("songUrl")));
+
+        String singer = intent.getStringExtra("songSinger");
+        song_singer.setText(singer);
+        String songName = intent.getStringExtra("songName");
+        song_name.setText(songName);
     }
 
     private void changeStatusMedia(){
@@ -119,6 +128,7 @@ public class PlayerActivity extends AppCompatActivity {
        Intent intent = new Intent(PlayerActivity.this, PlayerService.class);
         intent.putExtra("songName", name);
         intent.putExtra("songUrl", url);
+//        song_name.setText(name);
         return intent;
     }
 }

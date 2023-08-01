@@ -2,6 +2,7 @@ package com.example.myapplication.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +16,7 @@ import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
 import com.example.myapplication.R;
 import com.example.myapplication.adapter.ElementListAdapter;
@@ -22,6 +24,7 @@ import com.example.myapplication.data.ListSong;
 import com.example.myapplication.element.AlbumElemnet;
 import com.example.myapplication.element.BaseListElement;
 import com.example.myapplication.element.SongsElement;
+import com.example.myapplication.util.StorageUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
     ListView listView;
     ElementListAdapter adapter;
-
+    TextView song_sum;
     List<BaseListElement> listOfflineElement;
     View listHeader;
     View listFooter;
@@ -40,11 +43,12 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(getSupportActionBar() != null){
-            getSupportActionBar().setTitle("Music App");
+            getSupportActionBar().setTitle(R.string.app_name);
         }
 
         final String[] from = new String[]{"songName"};
@@ -57,6 +61,9 @@ public class MainActivity extends AppCompatActivity {
         addElement();
         listView.setAdapter(adapter);
         setUpHeaderAndFooter();
+        song_sum = findViewById(R.id.song_sum);
+
+        song_sum.setText(""+StorageUtil.getMp3FileCursor(this).getCount()+" bài hát trong máy bạn");
     }
     private void addElement(){
         listOfflineElement.add(new SongsElement(this));

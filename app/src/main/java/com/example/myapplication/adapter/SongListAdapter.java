@@ -76,7 +76,7 @@ public class SongListAdapter extends BaseAdapter implements AdapterView.OnItemCl
             public void onReceive(Context context, Intent intent) {
                 String action = intent.getAction();
                 if(DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(action)){
-                    Toast.makeText(context, "Đã tải nhạc xong thưa ngài!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Đã tải nhạc xong thưa ngài!", Toast.LENGTH_SHORT).show();
                 }
             }
         };
@@ -119,6 +119,7 @@ public class SongListAdapter extends BaseAdapter implements AdapterView.OnItemCl
         Intent intent = new Intent(context, PlayerActivity.class);
         intent.putExtra("songName", listSong.get(i).getSongName());
         intent.putExtra("songUrl", listSong.get(i).getSongUrl());
+        intent.putExtra("songSinger", listSong.get(i).getSongSinger());
         context.startActivity(intent);
     }
 }
