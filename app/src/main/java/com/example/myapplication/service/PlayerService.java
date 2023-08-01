@@ -39,6 +39,7 @@ public class PlayerService extends Service {
     MediaPlayer mediaPlayer;
     String url;
     String name;
+    String singer;
 
     updateTimerRunable updateTimer;
 
@@ -52,6 +53,7 @@ public class PlayerService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         url = intent.getStringExtra("songUrl");
         name = intent.getStringExtra("songName");
+        singer = intent.getStringExtra("songSinger");
         playAdudio();
         showNotification();
         IntentFilter filter = new IntentFilter("ChangeStatusMedia");
@@ -95,11 +97,10 @@ public class PlayerService extends Service {
         PendingIntent changeStatusIntent = PendingIntent.getBroadcast(this, 0, new Intent("changeStatus"), PendingIntent.FLAG_IMMUTABLE |PendingIntent.FLAG_UPDATE_CURRENT);
         PendingIntent stopAudioIntent = PendingIntent.getBroadcast(this, 0, new Intent("stopAudio"), PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
 
-
         Notification notification = new NotificationCompat.Builder(this, MyAplication.CHANNEL_ID)
 //        Notification notification = new Notification.Builder(this)
-                .setContentTitle("Audio Player")
-                .setContentText(name)
+                .setContentTitle(name)
+                .setContentText(singer)
                 .addAction(R.drawable.play, "pause/resum", changeStatusIntent)
                 .addAction(R.drawable.pause, "stop", stopAudioIntent)
                 .setPriority(NotificationManager.IMPORTANCE_HIGH)

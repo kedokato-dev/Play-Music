@@ -73,7 +73,7 @@ public class PlayerActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(createMessageRecevier(), filter);
 
         Intent intent = getIntent();
-        startService(createIntentService(intent.getStringExtra("songName"), intent.getStringExtra("songUrl")));
+        startService(createIntentService(intent.getStringExtra("songName"), intent.getStringExtra("songUrl"), intent.getStringExtra("songSinger")));
 
         String singer = intent.getStringExtra("songSinger");
         song_singer.setText(singer);
@@ -124,11 +124,11 @@ public class PlayerActivity extends AppCompatActivity {
     }
 
 
-    private Intent createIntentService(String name, String url){
+    private Intent createIntentService(String name, String url, String singer){
        Intent intent = new Intent(PlayerActivity.this, PlayerService.class);
         intent.putExtra("songName", name);
         intent.putExtra("songUrl", url);
-//        song_name.setText(name);
+        intent.putExtra("songSinger",singer );
         return intent;
     }
 }
