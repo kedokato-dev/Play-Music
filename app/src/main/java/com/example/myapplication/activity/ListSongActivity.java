@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.widget.AbsListView;
 import android.widget.ListView;
 
 import com.example.myapplication.R;
@@ -15,6 +16,8 @@ import com.example.myapplication.data.ListSong;
 import com.example.myapplication.element.Song;
 import com.example.myapplication.element.SongsElement;
 import com.example.myapplication.util.StorageUtil;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
 
 public class ListSongActivity extends AppCompatActivity {
 
@@ -34,6 +37,24 @@ public class ListSongActivity extends AppCompatActivity {
         songListAdapter = new SongListAdapter(this);
         listSong.setAdapter(songListAdapter);
         listSong.setOnItemClickListener(songListAdapter);
+
+        listSong.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView absListView, int i) {
+                if(i == SCROLL_STATE_IDLE){
+                    ImageLoader.getInstance().resume();
+                }else if(i == SCROLL_STATE_TOUCH_SCROLL){
+                    ImageLoader.getInstance().stop();
+                }else if(i == SCROLL_STATE_FLING){
+                    ImageLoader.getInstance().stop();
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView absListView, int i, int i1, int i2) {
+
+            }
+        });
         handleIntent(getIntent());
 
     }

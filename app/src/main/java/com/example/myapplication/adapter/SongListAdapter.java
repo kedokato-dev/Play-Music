@@ -21,6 +21,7 @@ import com.example.myapplication.R;
 import com.example.myapplication.activity.PlayerActivity;
 import com.example.myapplication.data.ListSong;
 import com.example.myapplication.element.Song;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
@@ -32,12 +33,19 @@ public class SongListAdapter extends BaseAdapter implements AdapterView.OnItemCl
     Context context;
     DownloadManager downloadManager;
     long enqueu;
+    DisplayImageOptions options;
 
 
     public SongListAdapter(Context context) {
         listSong = new ArrayList<>();
         this.context = context;
         ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(context));
+        options = new DisplayImageOptions.Builder()
+                .cacheOnDisk(true)
+                .cacheInMemory(true)
+                .showImageOnLoading(R.drawable.img)
+                .showImageOnFail(R.drawable.img)
+                .build();
     }
 
     @Override
@@ -94,8 +102,7 @@ public class SongListAdapter extends BaseAdapter implements AdapterView.OnItemCl
 
         songName.setText(listSong.get(i).getSongName());
         songSinger.setText(listSong.get(i).getSongSinger());
-        ImageLoader.getInstance().displayImage(listSong.get(i).getSongImageUrl(), songImage);
-
+        ImageLoader.getInstance().displayImage(listSong.get(i).getSongImageUrl(), songImage, options);
 
         return view;
     }

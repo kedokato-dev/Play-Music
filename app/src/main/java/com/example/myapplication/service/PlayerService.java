@@ -24,8 +24,13 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.example.myapplication.R;
 import com.example.myapplication.notification.MyAplication;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 
 public class PlayerService extends Service {
 
@@ -267,14 +272,43 @@ public class PlayerService extends Service {
                 if(mediaPlayer!=null){
                     mediaPlayer.release();
                 }
-                mediaPlayer = new MediaPlayer();
-                mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                String path = getExternalCacheDir() + "/.Audio/";
+                File folder = new File(path);
+                //kiem tra folder co ton tai hay chua, neu chua thi tao folder ra
+                if(!folder.exists()){
+                    // tao folder
+                    folder.mkdir();
+                }
+                File f = new File(getExternalCacheDir()+"/.Audio/"+String.valueOf(url.hashCode()) + ".mp3");
+                if(!f.exists()){
+                    try {
+                        f.createNewFile();
+                        InputStream in = new URL(url).openStream();
+                        BufferedInputStream bis = new BufferedInputStream(in);
+                        FileOutputStream fos = new FileOutputStream(f);
+                        BufferedOutputStream bos = new BufferedOutputStream(fos);
 
+                        do{
+                            int byteOfFile = bis.read();
+                            if(byteOfFile == -1){
+                                break;
+                            }
+                            bos.write(byteOfFile);
+                        }while (true);
+                        bos.close();
+                        in.close();
+                    } catch (IOException e) {
+                       e.printStackTrace();
+                    }
+
+                }
+                mediaPlayer = new MediaPlayer();
                 try {
-                    mediaPlayer.setDataSource(url);
+                    mediaPlayer.setDataSource(f.getPath());
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
+
 
                 try {
                     mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
@@ -289,6 +323,7 @@ public class PlayerService extends Service {
                     e.printStackTrace();
                 }
                 mediaPlayer.start();
+                mediaPlayer.setLooping(true);
             }
         };
     }
